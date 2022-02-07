@@ -68,3 +68,27 @@ for binary in range(len(helloworldBinary)) :
     helloworldBinaryToHex.append(format(int(helloworldBinary[binary], 2), 'x'))
 print(helloworldBinaryToHex)
 #===================================#
+
+
+print("")
+helloworldHex = helloworldCharToHex
+#============DEPART HEX=============#
+
+#Conversion d'une liste d'hexadécimales en leur correspondance ASCII (char)
+helloworldHexToChar = []
+for hexadecimal in range(len(helloworldHex)) :
+    helloworldHexToChar.append(chr(int(helloworldHex[hexadecimal], 16)))
+print(helloworldHexToChar)
+
+#Conversion d'une liste d'hexadécimales en int
+helloworldHexToASCII = []
+for hexadecimal in range(len(helloworldHex)) :
+    helloworldHexToASCII.append(int(helloworldHex[hexadecimal], 16))
+print(helloworldHexToASCII)
+
+#Conversion d'une liste dd'hexadécimales en binaire
+helloworldHexToBinary = []
+for hexadecimal in range(len(helloworldHex)) :
+    helloworldHexToBinary.append(format(int(helloworldHex[hexadecimal], 16), 'b'))
+print(helloworldHexToBinary)
+#===================================#
