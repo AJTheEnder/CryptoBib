@@ -44,3 +44,27 @@ for integer in range(len(helloworldASCII)) :
     helloworldASCIIToHex.append(format(helloworldASCII[integer], 'x'))
 print(helloworldASCIIToHex)
 #===================================#
+
+
+print("")
+helloworldBinary = helloworldCharToBinary
+#============DEPART BIN=============#
+
+#Conversion d'une liste de binaires en leur correspondance ASCII (char)
+helloworldBinaryToChar = []
+for binary in range(len(helloworldBinary)) :
+    helloworldBinaryToChar.append(chr(int(helloworldBinary[binary], 2)))
+print(helloworldBinaryToChar)
+
+#Conversion d'une liste de binaires en int
+helloworldBinaryToASCII = []
+for binary in range(len(helloworldBinary)) :
+    helloworldBinaryToASCII.append(int(helloworldBinary[binary], 2))
+print(helloworldBinaryToASCII)
+
+#Conversion d'une liste de binaires en hexadécimal
+helloworldBinaryToHex = []
+for binary in range(len(helloworldBinary)) :
+    helloworldBinaryToHex.append(format(int(helloworldBinary[binary], 2), 'x'))
+print(helloworldBinaryToHex)
+#===================================#
