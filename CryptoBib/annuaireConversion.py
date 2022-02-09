@@ -130,7 +130,7 @@ def conversionHexTo(texteHex, typeRetour) :
 ||==============================================||
 ||                 Zone de test                 ||
 ||==============================================||
-'''
+
 
 print("")
 helloworldChar = "Hello world"
@@ -238,3 +238,4 @@ helloworldErreur = conversionHexTo(helloworldHex, 'z')
 print(helloworldErreur)
 
 #===================================#
+'''
