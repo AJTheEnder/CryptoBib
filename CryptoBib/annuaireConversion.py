@@ -95,7 +95,7 @@ def conversionBinTo(texteBin, typeRetour) :
         return texteBin
     
 '''
-  <<==============Conversion Bin==============>>
+  <<==============Conversion Hex==============>>
 '''
 def conversionHexTo(texteHex, typeRetour) :
     
@@ -117,7 +117,7 @@ def conversionHexTo(texteHex, typeRetour) :
             texteBin.append(format(int(texteHex[hexadecimal], 16), 'b'))
         return texteBin
     
-    elif (typeRetour == 'a') :
+    elif (typeRetour == 'h') :
         return texteHex
     
     else :

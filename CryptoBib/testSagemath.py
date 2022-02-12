@@ -15,6 +15,11 @@ a = 10
 b = 2
 c = a // b
 
+str1 = ''
+str2 = 'e'
+
+print(str1 + str2)
+
 print(factorielTest)
 print(matriceTestA)
 
