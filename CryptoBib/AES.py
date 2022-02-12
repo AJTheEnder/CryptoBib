@@ -115,7 +115,44 @@ class messageAES :
                     #Remplacement de l'élément de la matrice par son équivalent dans la S_BOX
                     self.messageHacher[messageParts][i, j] = int(S_BOX[indiceByte0][indiceByte1], 16)
                 
-                                
+    '''
+  <<===========Fonction ShiftRows=============>>
+    ''' 
+    def shiftRows(self) :
+        #Pour chaque matrice dans le message
+        for messageParts in range(len(self.messageHacher)) :
+            #On garde en mémoire les anciennes valeurs de la ligne 1
+            element10Tampon =  self.messageHacher[messageParts][1, 0]
+            element11Tampon =  self.messageHacher[messageParts][1, 1]
+            element12Tampon =  self.messageHacher[messageParts][1, 2]
+            element13Tampon =  self.messageHacher[messageParts][1, 3]
+            #On change la disposition des éléments de la ligne 1
+            self.messageHacher[messageParts][1, 0] = element11Tampon
+            self.messageHacher[messageParts][1, 1] = element12Tampon
+            self.messageHacher[messageParts][1, 2] = element13Tampon
+            self.messageHacher[messageParts][1, 3] = element10Tampon
+            
+            #On garde en mémoire les anciennes valeurs de la ligne 2
+            element20Tampon =  self.messageHacher[messageParts][2, 0]
+            element21Tampon =  self.messageHacher[messageParts][2, 1]
+            element22Tampon =  self.messageHacher[messageParts][2, 2]
+            element23Tampon =  self.messageHacher[messageParts][2, 3]
+            #On change la disposition des éléments de la ligne 2
+            self.messageHacher[messageParts][2, 0] = element22Tampon
+            self.messageHacher[messageParts][2, 1] = element23Tampon
+            self.messageHacher[messageParts][2, 2] = element20Tampon
+            self.messageHacher[messageParts][2, 3] = element21Tampon
+            
+            #On garde en mémoire les anciennes valeurs de la ligne 3
+            element30Tampon =  self.messageHacher[messageParts][3, 0]
+            element31Tampon =  self.messageHacher[messageParts][3, 1]
+            element32Tampon =  self.messageHacher[messageParts][3, 2]
+            element33Tampon =  self.messageHacher[messageParts][3, 3]
+            #On change la disposition des éléments de la ligne 3
+            self.messageHacher[messageParts][3, 0] = element33Tampon
+            self.messageHacher[messageParts][3, 1] = element30Tampon
+            self.messageHacher[messageParts][3, 2] = element31Tampon
+            self.messageHacher[messageParts][3, 3] = element32Tampon                        
 '''
 ||==============================================||
 ||                 Zone de test                 ||
@@ -143,3 +180,7 @@ print(messageHacher.messageHacher)
 print('')
 messageHacher.subBytes()
 print(messageHacher.messageHacher)  
+
+print('')
+messageHacher.shiftRows()
+print(messageHacher.messageHacher)
