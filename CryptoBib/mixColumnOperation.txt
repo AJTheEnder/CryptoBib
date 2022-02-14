@@ -1,0 +1,32 @@
+|=====================================================|
+|     EXEMPLE ET INSTRUCTIONS OPERATION MIXCOLUMN     |
+|=====================================================|
+
+02*63 + 03*9c + 01*7b + 01*ca
+
+(0000 0010) * (0110 0011) +  \
+(0000 0011) * (1001 1100) +   | ==>   Conversion de l'hexadécimal
+(0000 0001) * (0111 1011) +   | ==>           en binaire
+(0000 0001) * (1100 1010) =  /
+
+X * (X6 + X5 + X + 1)           +  \
+(X + 1) * (X7 + X4 + X3 + X2)   +   | ==>     Mise en évidence avec
+1 * (X6 + X5 + X4 + X3 + X + 1) +   | ==>   des symboles polynomiales
+1 * (X7 + X6 + X3 + X)          =  /
+
+X7 + X6 + X2 + X                      +  \
+X8 + X5 + X4 + X3 + X7 + X4 + X3 + X2 +   | ==>    Distribution des
+X6 + X5 + X4 + X3 + X + 1             +   | ==>      parenthèses
+X7 + X6 + X3 + X                      =  /
+
+X8 + 3*X7 + 3*X6 + 2*X5 + 3*X4 + 4*X3 + 2*X2 + 3*X + 1 ==> Rassemblement des éléments identiques
+
+X8 + X7 + X6 + X4 + X + 1 ==> XOR des éléments 
+
+1 1101 0011 ==> Retranstriction en binaire
+
+1 1101 0011 +  \
+1 0001 1011 =   | ==> Si X8 alors XOR l'expression avec p(X) = X8 + X4 +X3 + X +1 (1 0001 1011)
+1100 1000      /
+
+Après l'opération MixColumn [63, 9c, 7b, ca] le premier éléments de la nouvelle colonne sera C8
