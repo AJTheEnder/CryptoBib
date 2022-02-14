@@ -167,29 +167,40 @@ class MessageAES :
   <<===========Fonction ShiftRows=============>>
     ''' 
     def mixColumn(self) :
+        #Pour chaque matrice du message
         for index in range(len(self.messageHacher)) :
             messageParts = self.messageHacher[index]
             
+            #Pour chaque ligne de la matrice de rijndael
             for i in range(4) :
                 rijndaelRow = sage.all.matrix(RIJNDAEL_MATRIX.row(i))
                 
+                #Pour chaque colonne de la matrice courante
                 for j in range(4) : 
                     messagePartsColumn = sage.all.matrix(messageParts.column(j))
                     
+                    #Initialisation d'une liste qui servira au calcul de l'élément final
+                    #Notament pour l'opération XOR
                     counterTab = [0, 0, 0, 0, 0, 0, 0, 0, 0]           
                                  #8, 7, 6, 5, 4, 3, 2, 1, 0      
                                  #X[ 2eme bin  ][ 1er bin  ]
                     
+                    #Pour chaque élément d'une ligne et d'une colonne 
                     for m in range(4) :
+                        #Conversion de l'élément m de la colonne courante en binaire
                         binaryData = format(messagePartsColumn[0][m], 'b')
                         listBinary = []
                         
+                        #Remplissage de la liste de chiffre binaire jusqu'à une longueur de 8
                         for b in range(len(binaryData)) :
                             listBinary.append(binaryData[b])
                         while (len(listBinary) != 8) :
+                            #Insertion de 0 à l'avant de la liste tant qu'elle de fait pas 8 de longueur
                             listBinary.insert(0, '0')
 
+                        #Pour chaque chiffre binaire de la liste
                         for b in range(len(listBinary)) :
+                            #Opérations dans la counterList pour connaitre le binaire de fin
                             if (rijndaelRow[0][m] == 1) :
                                 if (listBinary[b] == '1') :   
                                     counterTab[b + 1] += 1
@@ -201,12 +212,14 @@ class MessageAES :
                                     counterTab[b + 1] += 1
                                     counterTab[b] += 1
                         
+                        #Quand un élément de la liste est impair mettre 1 sinon mettre 0
                         for b in range(len(counterTab)) :
                             if (counterTab[b] % 2 == 1) :
                                 counterTab[b] = 1
                             else :
                                 counterTab[b] = 0
                                 
+                        #Si le 9ème bit est 1 alors XOR la counterList avec P(X)
                         if (counterTab[0] == 1) :
                             for b in range(len(counterTab)) :
                                 if (counterTab[b] == PX[b]) :
@@ -214,11 +227,13 @@ class MessageAES :
                                 else :
                                     counterTab[b] = 1
                     
+                    #Conversion du chiffre binaire final en int
                     finalBinary = '0b'
                     for b in range(len(counterTab)) :
                         counterTab[b] = str(counterTab[b])
                         finalBinary += counterTab[b]                        
                     finalNumber = int(finalBinary, 2)
+                    #Remplacement de l'ancienne valeur par la nouvelle
                     self.messageHacher[index][i, j] = finalNumber
                         
                         
