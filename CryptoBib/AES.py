@@ -1,3 +1,4 @@
+from typing import final
 from sage.all import *
 import annuaireConversion as AC
 
@@ -20,13 +21,21 @@ S_BOX = [
     ['0x8c', '0xa1', '0x89', '0x0d', '0xbf', '0xe6', '0x42', '0x68', '0x41', '0x99', '0x2d', '0x0f', '0xb0', '0x54', '0xbb', '0x16']
 ]
 
+RIJNDAEL_MATRIX = sage.all.matrix([
+    [2, 3, 1, 1],
+    [1, 2, 3, 1],
+    [1, 1, 2, 3],
+    [3, 1, 1, 2]
+])
+
+PX = [1, 0, 0, 0, 1, 1, 0, 1, 1]
 
 '''
 ||==============================================||
 ||           Fonctions de la clé AES            ||
 ||==============================================||
 '''
-class cleAES :
+class CleAES :
     '''
   <<===========Constructeur clé AES===========>>
     '''
@@ -49,7 +58,7 @@ class cleAES :
 ||           Fonctions du message AES           ||
 ||==============================================||
 '''            
-class messageAES :
+class MessageAES :
     '''
   <<=========Constructeur message AES=========>>
     '''
@@ -122,10 +131,10 @@ class messageAES :
         #Pour chaque matrice dans le message
         for messageParts in range(len(self.messageHacher)) :
             #On garde en mémoire les anciennes valeurs de la ligne 1
-            element10Tampon =  self.messageHacher[messageParts][1, 0]
-            element11Tampon =  self.messageHacher[messageParts][1, 1]
-            element12Tampon =  self.messageHacher[messageParts][1, 2]
-            element13Tampon =  self.messageHacher[messageParts][1, 3]
+            element10Tampon = self.messageHacher[messageParts][1, 0]
+            element11Tampon = self.messageHacher[messageParts][1, 1]
+            element12Tampon = self.messageHacher[messageParts][1, 2]
+            element13Tampon = self.messageHacher[messageParts][1, 3]
             #On change la disposition des éléments de la ligne 1
             self.messageHacher[messageParts][1, 0] = element11Tampon
             self.messageHacher[messageParts][1, 1] = element12Tampon
@@ -133,10 +142,10 @@ class messageAES :
             self.messageHacher[messageParts][1, 3] = element10Tampon
             
             #On garde en mémoire les anciennes valeurs de la ligne 2
-            element20Tampon =  self.messageHacher[messageParts][2, 0]
-            element21Tampon =  self.messageHacher[messageParts][2, 1]
-            element22Tampon =  self.messageHacher[messageParts][2, 2]
-            element23Tampon =  self.messageHacher[messageParts][2, 3]
+            element20Tampon = self.messageHacher[messageParts][2, 0]
+            element21Tampon = self.messageHacher[messageParts][2, 1]
+            element22Tampon = self.messageHacher[messageParts][2, 2]
+            element23Tampon = self.messageHacher[messageParts][2, 3]
             #On change la disposition des éléments de la ligne 2
             self.messageHacher[messageParts][2, 0] = element22Tampon
             self.messageHacher[messageParts][2, 1] = element23Tampon
@@ -144,15 +153,76 @@ class messageAES :
             self.messageHacher[messageParts][2, 3] = element21Tampon
             
             #On garde en mémoire les anciennes valeurs de la ligne 3
-            element30Tampon =  self.messageHacher[messageParts][3, 0]
-            element31Tampon =  self.messageHacher[messageParts][3, 1]
-            element32Tampon =  self.messageHacher[messageParts][3, 2]
-            element33Tampon =  self.messageHacher[messageParts][3, 3]
+            element30Tampon = self.messageHacher[messageParts][3, 0]
+            element31Tampon = self.messageHacher[messageParts][3, 1]
+            element32Tampon = self.messageHacher[messageParts][3, 2]
+            element33Tampon = self.messageHacher[messageParts][3, 3]
             #On change la disposition des éléments de la ligne 3
             self.messageHacher[messageParts][3, 0] = element33Tampon
             self.messageHacher[messageParts][3, 1] = element30Tampon
             self.messageHacher[messageParts][3, 2] = element31Tampon
-            self.messageHacher[messageParts][3, 3] = element32Tampon                        
+            self.messageHacher[messageParts][3, 3] = element32Tampon 
+            
+    '''
+  <<===========Fonction ShiftRows=============>>
+    ''' 
+    def mixColumn(self) :
+        for index in range(len(self.messageHacher)) :
+            messageParts = self.messageHacher[index]
+            
+            for i in range(4) :
+                rijndaelRow = sage.all.matrix(RIJNDAEL_MATRIX.row(i))
+                
+                for j in range(4) : 
+                    messagePartsColumn = sage.all.matrix(messageParts.column(j))
+                    
+                    counterTab = [0, 0, 0, 0, 0, 0, 0, 0, 0]           
+                                 #8, 7, 6, 5, 4, 3, 2, 1, 0      
+                                 #X[ 2eme bin  ][ 1er bin  ]
+                    
+                    for m in range(4) :
+                        binaryData = format(messagePartsColumn[0][m], 'b')
+                        listBinary = []
+                        
+                        for b in range(len(binaryData)) :
+                            listBinary.append(binaryData[b])
+                        while (len(listBinary) != 8) :
+                            listBinary.insert(0, '0')
+
+                        for b in range(len(listBinary)) :
+                            if (rijndaelRow[0][m] == 1) :
+                                if (listBinary[b] == '1') :   
+                                    counterTab[b + 1] += 1
+                            elif (rijndaelRow[0][m] == 2) :
+                                if (listBinary[b] == '1') :   
+                                    counterTab[b] += 1
+                            elif (rijndaelRow[0][m] == 3) :
+                                if (listBinary[b] == '1') :   
+                                    counterTab[b + 1] += 1
+                                    counterTab[b] += 1
+                        
+                        for b in range(len(counterTab)) :
+                            if (counterTab[b] % 2 == 1) :
+                                counterTab[b] = 1
+                            else :
+                                counterTab[b] = 0
+                                
+                        if (counterTab[0] == 1) :
+                            for b in range(len(counterTab)) :
+                                if (counterTab[b] == PX[b]) :
+                                    counterTab[b] = 0
+                                else :
+                                    counterTab[b] = 1
+                    
+                    finalBinary = '0b'
+                    for b in range(len(counterTab)) :
+                        counterTab[b] = str(counterTab[b])
+                        finalBinary += counterTab[b]                        
+                    finalNumber = int(finalBinary, 2)
+                    self.messageHacher[index][i, j] = finalNumber
+                        
+                        
+                        
 '''
 ||==============================================||
 ||                 Zone de test                 ||
@@ -160,7 +230,7 @@ class messageAES :
 '''
 
 mdp = "Cdfp56qpr8Z4G73c"
-cle = cleAES(mdp)
+cle = CleAES(mdp)
 print(cle.cle)
   
 message = "Les chaussettes de l'archiduchesse sont-elle sèches, archisèches ?"
@@ -174,7 +244,8 @@ print("le message est d'une longueur de ", len(message),
       " blocks de 16 caractères et possède ", lastBlock, 
       " block incomplet de ", len(message) % 16, "caractères")
 
-messageHacher = messageAES(message)
+print('')
+messageHacher = MessageAES(message)
 print(messageHacher.messageHacher)
 
 print('')
@@ -183,4 +254,8 @@ print(messageHacher.messageHacher)
 
 print('')
 messageHacher.shiftRows()
+print(messageHacher.messageHacher)
+
+print('')
+messageHacher.mixColumn()
 print(messageHacher.messageHacher)
