@@ -1,4 +1,3 @@
-from typing import final
 from sage.all import *
 import annuaireConversion as AC
 
@@ -235,9 +234,54 @@ class MessageAES :
                     finalNumber = int(finalBinary, 2)
                     #Remplacement de l'ancienne valeur par la nouvelle
                     self.messageHacher[index][i, j] = finalNumber
+
+    '''
+  <<===========Fonction MixColumn=============>>
+    '''                         
+    def addRoundKey(self, roundKey) :
+        #Pour chaque matrice du message
+        for messageParts in range(len(self.messageHacher)) :
+            #Pour chaque élément de la matrice message courante et la cle courante 
+            for i in range(4) :
+                for j in range(4) :                   
+                    #Conversion de l'élément courant de la matrice et la cle en binaire
+                    binaryDataMessage = format(self.messageHacher[messageParts][i][j], 'b') 
+                    binaryDataCle = format(roundKey[i][j], 'b')  
+                    listBinaryMessage = []
+                    listBinaryCle = []
                         
+                    #Remplissage de la liste message de chiffre binaire jusqu'à une longueur de 8
+                    for b in range(len(binaryDataMessage)) :
+                        listBinaryMessage.append(binaryDataMessage[b])
+                    while (len(listBinaryMessage) != 8) :
+                        #Insertion de 0 à l'avant de la liste tant qu'elle de fait pas 8 de longueur
+                        listBinaryMessage.insert(0, '0') 
                         
+                    #Remplissage de la liste clé de chiffre binaire jusqu'à une longueur de 8
+                    for b in range(len(binaryDataCle)) :
+                        listBinaryCle.append(binaryDataCle[b])
+                    while (len(listBinaryCle) != 8) :
+                        #Insertion de 0 à l'avant de la liste tant qu'elle de fait pas 8 de longueur
+                        listBinaryCle.insert(0, '0')
                         
+                    resultat = []
+                    #Pour chaque bit
+                    for b in range(8) :
+                        #Si le bit de la cle et du message sont différent alors le bit du résultat est 1
+                        if (listBinaryMessage[b] != listBinaryCle[b]) :
+                            resultat.append(1)
+                        #sinon c'est 0
+                        else :
+                            resultat.append(0)
+                    
+                    #Conversion du chiffre binaire final en int
+                    finalBinary = '0b'
+                    for b in range(len(resultat)) :
+                        resultat[b] = str(resultat[b])
+                        finalBinary += resultat[b]                        
+                    finalNumber = int(finalBinary, 2)
+                    #Remplacement de l'ancienne valeur par la nouvelle
+                    self.messageHacher[messageParts][i, j] = finalNumber
 '''
 ||==============================================||
 ||                 Zone de test                 ||
@@ -263,6 +307,7 @@ print('')
 messageHacher = MessageAES(message)
 print(messageHacher.messageHacher)
 
+
 print('')
 messageHacher.subBytes()
 print(messageHacher.messageHacher)  
@@ -273,4 +318,9 @@ print(messageHacher.messageHacher)
 
 print('')
 messageHacher.mixColumn()
+print(messageHacher.messageHacher)
+
+
+print('')
+messageHacher.addRoundKey(cle.cle)
 print(messageHacher.messageHacher)
