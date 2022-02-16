@@ -1,3 +1,4 @@
+from re import sub
 from sage.all import *
 import annuaireConversion as AC
 
@@ -29,6 +30,18 @@ RIJNDAEL_MATRIX = sage.all.matrix([
 
 PX = [1, 0, 0, 0, 1, 1, 0, 1, 1]
 
+RCON = [[0, 0, 0, 0, 0, 0, 0, 1], 
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 1, 0, 1, 1],
+        [0, 0, 1, 1, 0, 1, 1, 0],
+]
+
 '''
 ||==============================================||
 ||           Fonctions de la clé AES            ||
@@ -49,7 +62,138 @@ class CleAES :
             for j in range(4) :
                 matriceCle[i, j] = asciiCle[indexStrCle]
                 indexStrCle += 1
-        self.cle = matriceCle 
+        self.originalCle = matriceCle 
+        self.subCleList = []
+        self.currentKey = self.originalCle
+        
+    '''
+  <<===========Fonction KeySchedule===========>>
+    '''  
+    def keySchedule(self) :
+        for key in range(10) :
+            #Création d'un sous-clé vide
+            subKey = sage.all.matrix([[0, 0, 0, 0],
+                                      [0, 0, 0, 0],
+                                      [0, 0, 0, 0],
+                                      [0, 0, 0, 0],])
+            
+            #Shuffle de la première colonne de la current key
+            subKey[0, 0] = self.currentKey[1][3] 
+            subKey[1, 0] = self.currentKey[2][3]
+            subKey[2, 0] = self.currentKey[3][3]
+            subKey[3, 0] = self.currentKey[1][3]  
+            
+            #Pour chaque élément de la 1ère colonne
+            for i in range(4) :
+                #Transformation d'un nombre en liste de 1 nombre (pour la conversion)
+                preConversion = [subKey[i][0]]
+                
+                #Conversion de ce nombre en son équivalent hexadécimal
+                hexByte = AC.conversionASCIITo(preConversion, 'h')
+                
+                if (len(hexByte[0]) != 2) :
+                    hexByte[0] += '0'
+                
+                #Séparation des 2 composant du nombre hexadécimal en les convertissant en int
+                indiceByte0 = int((hexByte[0][0]), 16)
+                indiceByte1 = int((hexByte[0][1]), 16)
+                
+                #Remplacement de l'élément de la matrice par son équivalent dans la S_BOX
+                subKey[i, 0] = int(S_BOX[indiceByte0][indiceByte1], 16)
+                
+                #Initialisation d'une liste qui servira au calcul de l'élément final
+                #Notament pour l'opération XOR
+                counterTab = [0, 0, 0, 0, 0, 0, 0, 0]           
+                            # 7, 6, 5, 4, 3, 2, 1, 0      
+                            #[ 2eme bin ][ 1er bin  ]
+            
+                #Conversion de l'élément i de la première colonne de la subKey en binaire
+                binaryDataSubKey = format(subKey[i][0], 'b')               
+                listBinarySubKey = []
+                
+                #Conversion de l'élément i de la première colonne de la currentKey en binaire
+                binaryDataCurrentKey = format(self.currentKey[i][0], 'b')
+                listBinaryCurrentKey = []
+                
+                #Remplissage de la liste de chiffre binaire jusqu'à une longueur de 8
+                for b in range(len(binaryDataSubKey)) :
+                    listBinarySubKey.append(binaryDataSubKey[b])
+                while (len(listBinarySubKey) != 8) :
+                    #Insertion de 0 à l'avant de la liste tant qu'elle de fait pas 8 de longueur
+                    listBinarySubKey.insert(0, '0')
+                    
+                #Remplissage de la liste de chiffre binaire jusqu'à une longueur de 8
+                for b in range(len(binaryDataCurrentKey)) :
+                    listBinaryCurrentKey.append(binaryDataCurrentKey[b])
+                while (len(listBinaryCurrentKey) != 8) :
+                    #Insertion de 0 à l'avant de la liste tant qu'elle de fait pas 8 de longueur
+                    listBinaryCurrentKey.insert(0, '0')
+                    
+                #Pour chaque chiffre binaire de la liste
+                for b in range(8) :
+                    #Opérations dans la counterList pour connaitre le binaire de fin
+                    if (i == 0) :
+                        counterTab[b] += RCON[key][b]
+                    if (listBinaryCurrentKey[b] == '1') :
+                        counterTab[b] += 1
+                    if (listBinarySubKey[b] == '1') :
+                        counterTab[b] += 1
+                        
+                #Quand un élément de la liste est impair mettre 1 sinon mettre 0
+                for b in range(len(counterTab)) :
+                    if (counterTab[b] % 2 == 1) :
+                        counterTab[b] = 1
+                    else :
+                        counterTab[b] = 0
+                        
+                #Conversion du chiffre binaire final en int
+                finalBinary = '0b'
+                for b in range(len(counterTab)) :
+                    counterTab[b] = str(counterTab[b])
+                    finalBinary += counterTab[b]                        
+                finalNumber = int(finalBinary, 2)
+                #Remplacement de l'ancienne valeur par la nouvelle
+                subKey[i, 0] = finalNumber
+            
+            for column in range(1, 4) :
+                for j in range(4) :
+                    #Conversion de l'élément j de la "column - 1" colonne de la subKey en binaire
+                    binaryDataSubKey = format(subKey[j][column - 1], 'b')               
+                    listBinarySubKey = []
+                    
+                    #Conversion de l'élément j de la "column" colonne de la currentKey en binaire
+                    binaryDataCurrentKey = format(self.currentKey[j][column], 'b')
+                    listBinaryCurrentKey = []
+                    
+                    #Remplissage de la liste de chiffre binaire jusqu'à une longueur de 8
+                    for b in range(len(binaryDataSubKey)) :
+                        listBinarySubKey.append(binaryDataSubKey[b])
+                    while (len(listBinarySubKey) != 8) :
+                        #Insertion de 0 à l'avant de la liste tant qu'elle de fait pas 8 de longueur
+                        listBinarySubKey.insert(0, '0')
+
+                    #Remplissage de la liste de chiffre binaire jusqu'à une longueur de 8
+                    for b in range(len(binaryDataCurrentKey)) :
+                        listBinaryCurrentKey.append(binaryDataCurrentKey[b])
+                    while (len(listBinaryCurrentKey) != 8) :
+                        #Insertion de 0 à l'avant de la liste tant qu'elle de fait pas 8 de longueur
+                        listBinaryCurrentKey.insert(0, '0')
+                        
+                    #Calcul et conversion du chiffre binaire final en int
+                    finalBinary = '0b'
+                    for b in range(8) :
+                        if (listBinarySubKey[b] != listBinaryCurrentKey[b]) :
+                            finalBinary += '1'
+                        else :
+                            finalBinary += '0'
+                    finalNumber = int(finalBinary, 2)
+                    #Remplacement de l'ancienne valeur par la nouvelle
+                    subKey[j, column] = finalNumber
+                
+            self.subCleList.append(subKey)
+            self.currentKey = subKey
+        self.currentKey = self.originalCle
+        
 
 
 '''
@@ -115,6 +259,9 @@ class MessageAES :
                     
                     #Conversion de ce nombre en son équivalent hexadécimal
                     hexByte = AC.conversionASCIITo(preConversion, 'h')
+                    
+                    if (len(hexByte[0]) != 2) :
+                        hexByte[0] += '0'
                     
                     #Séparation des 2 composant du nombre hexadécimal en les convertissant en int
                     indiceByte0 = int((hexByte[0][0]), 16)
@@ -290,7 +437,9 @@ class MessageAES :
 
 mdp = "Cdfp56qpr8Z4G73c"
 cle = CleAES(mdp)
-print(cle.cle)
+print(cle.originalCle)
+
+cle.keySchedule()
   
 message = "Les chaussettes de l'archiduchesse sont-elle sèches, archisèches ?"
 lastBlock = 1
@@ -303,24 +452,13 @@ print("le message est d'une longueur de ", len(message),
       " blocks de 16 caractères et possède ", lastBlock, 
       " block incomplet de ", len(message) % 16, "caractères")
 
-print('')
 messageHacher = MessageAES(message)
-print(messageHacher.messageHacher)
 
-
-print('')
 messageHacher.subBytes()
-print(messageHacher.messageHacher)  
 
-print('')
 messageHacher.shiftRows()
-print(messageHacher.messageHacher)
 
-print('')
 messageHacher.mixColumn()
-print(messageHacher.messageHacher)
 
-
-print('')
-messageHacher.addRoundKey(cle.cle)
+messageHacher.addRoundKey(cle.currentKey)
 print(messageHacher.messageHacher)
