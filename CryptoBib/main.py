@@ -1,10 +1,14 @@
 import AES 
 
-mdp = "Cdfp56qpr8Z4G73c"
+mdp = "abcdefghijklmnop"
 print('')
 print("mot de passe : ", mdp)
 
 cle = AES.CleAES(mdp)
+print('')
+print("cle originel : ")
+print('')
+print(cle.originalCle)
 
 cle.keySchedule()
 print('')
@@ -13,7 +17,7 @@ for subCle in range(len(cle.subCleList)) :
     print('')
     print(cle.subCleList[subCle])
   
-message = "Les chaussettes de l'archiduchesse sont-elle sèches, archisèches ?"
+message = "ahah bip boup cc"
 print('')
 print("message : ", message)
 
@@ -46,3 +50,7 @@ messageHacher.addRoundKey(cle.subCleList[9])
 
 print('')
 messageHacher.turnIntoChar()
+
+print('')
+print("La matrice de fin est : ")
+print(messageHacher.messageHacher)

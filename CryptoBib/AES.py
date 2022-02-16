@@ -1,6 +1,12 @@
 from sage.all import *
 import annuaireConversion as AC
 
+'''
+||==============================================||
+||                 Constantes                   ||
+||==============================================||
+'''
+
 S_BOX = [
     ['0x63', '0x7c', '0x77', '0x7b', '0xf2', '0x6b', '0x6f', '0xc5', '0x30', '0x01', '0x67', '0x2b', '0xfe', '0xd7', '0xab', '0x76'],
     ['0xca', '0x82', '0xc9', '0x7d', '0xfa', '0x59', '0x47', '0xf0', '0xad', '0xd4', '0xa2', '0xaf', '0x9c', '0xa4', '0x72', '0xc0'],
@@ -382,7 +388,7 @@ class MessageAES :
                     self.messageHacher[index][i, j] = finalNumber
 
     '''
-  <<===========Fonction MixColumn=============>>
+  <<==========Fonction AddRoundKey============>>
     '''                         
     def addRoundKey(self, roundKey) :
         #Pour chaque matrice du message
@@ -433,14 +439,15 @@ class MessageAES :
   <<=========Fonction TurnIntoChar============>>
     '''
     def turnIntoChar(self) :
-        codedMessage = []
+        codedMessage = ""
         #Pour chaque matrice du message
         for messageParts in range(len(self.messageHacher)) :
             #Pour chaque élément de la matrice
             for i in range(4) : 
                 for j in range(4) :
-                    codedMessage.append(chr(self.messageHacher[messageParts][i][j]))
-        print("Le message encrypté est : ", ''.join([str(elem) for elem in codedMessage])) 
+                    codedMessage += chr(self.messageHacher[messageParts][i][j])
+        print("Le message encrypté est : ")
+        print(''.join([str(elem) for elem in codedMessage])) 
                     
             
 '''
