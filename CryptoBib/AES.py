@@ -1,4 +1,3 @@
-from re import sub
 from sage.all import *
 import annuaireConversion as AC
 
@@ -92,7 +91,7 @@ class CleAES :
                 hexByte = AC.conversionASCIITo(preConversion, 'h')
                 
                 if (len(hexByte[0]) != 2) :
-                    hexByte[0] += '0'
+                    hexByte[0] = '0' + hexByte[0]
                 
                 #Séparation des 2 composant du nombre hexadécimal en les convertissant en int
                 indiceByte0 = int((hexByte[0][0]), 16)
@@ -261,7 +260,7 @@ class MessageAES :
                     hexByte = AC.conversionASCIITo(preConversion, 'h')
                     
                     if (len(hexByte[0]) != 2) :
-                        hexByte[0] += '0'
+                        hexByte[0] = '0' + hexByte[0]
                     
                     #Séparation des 2 composant du nombre hexadécimal en les convertissant en int
                     indiceByte0 = int((hexByte[0][0]), 16)
@@ -429,12 +428,27 @@ class MessageAES :
                     finalNumber = int(finalBinary, 2)
                     #Remplacement de l'ancienne valeur par la nouvelle
                     self.messageHacher[messageParts][i, j] = finalNumber
+                    
+    '''
+  <<=========Fonction TurnIntoChar============>>
+    '''
+    def turnIntoChar(self) :
+        codedMessage = []
+        #Pour chaque matrice du message
+        for messageParts in range(len(self.messageHacher)) :
+            #Pour chaque élément de la matrice
+            for i in range(4) : 
+                for j in range(4) :
+                    codedMessage.append(chr(self.messageHacher[messageParts][i][j]))
+        print(''.join([str(elem) for elem in codedMessage])) 
+                    
+            
 '''
 ||==============================================||
 ||                 Zone de test                 ||
 ||==============================================||
 '''
-
+'''
 mdp = "Cdfp56qpr8Z4G73c"
 cle = CleAES(mdp)
 print(cle.originalCle)
@@ -461,4 +475,6 @@ messageHacher.shiftRows()
 messageHacher.mixColumn()
 
 messageHacher.addRoundKey(cle.currentKey)
-print(messageHacher.messageHacher)
+
+messageHacher.turnIntoChar()
+'''
