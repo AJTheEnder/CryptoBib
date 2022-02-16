@@ -440,7 +440,7 @@ class MessageAES :
             for i in range(4) : 
                 for j in range(4) :
                     codedMessage.append(chr(self.messageHacher[messageParts][i][j]))
-        print(''.join([str(elem) for elem in codedMessage])) 
+        print("Le message encrypté est : ", ''.join([str(elem) for elem in codedMessage])) 
                     
             
 '''
