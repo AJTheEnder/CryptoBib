@@ -1,3 +1,5 @@
+from termios import TIOCPKT_DOSTOP
+from unittest import result
 from sage.all import *
 import annuaireConversion as AC
 
@@ -529,7 +531,67 @@ class DecryptMessageAES :
             self.messageHacherCypter[messageParts][3, 1] = element32Tampon
             self.messageHacherCypter[messageParts][3, 2] = element33Tampon
             self.messageHacherCypter[messageParts][3, 3] = element30Tampon 
+            
+    '''
+  <<=======Fonction Reverse MixColumn=========>>
+    ''' 
+    def reverseMixColumn(self) :
+        todo = "A FAIRE"
         
+    '''
+  <<======Fonction Reverse AddRoundKey========>>
+    ''' 
+    def reverseAddRoundKey(self, roundKey) :
+        #Pour chaque matrice du message
+        for messageParts in range(len(self.messageHacherCypter)) :
+            #Pour chaque élément de la matrice
+            for i in range(4) :
+                for j in range(4) :   
+                    #Conversion de l'élément courant de la matrice et la cle en binaire
+                    binaryDataMessage = format(self.messageHacherCypter[messageParts][i][j], 'b') 
+                    binaryDataCle = format(roundKey[i][j], 'b')  
+                    listBinaryMessage = []
+                    listBinaryCle = []
+                        
+                    #Remplissage de la liste message de chiffre binaire jusqu'à une longueur de 8
+                    for b in range(len(binaryDataMessage)) :
+                        listBinaryMessage.append(binaryDataMessage[b])
+                    while (len(listBinaryMessage) != 8) :
+                        #Insertion de 0 à l'avant de la liste tant qu'elle de fait pas 8 de longueur
+                        listBinaryMessage.insert(0, '0') 
+                        
+                    #Remplissage de la liste clé de chiffre binaire jusqu'à une longueur de 8
+                    for b in range(len(binaryDataCle)) :
+                        listBinaryCle.append(binaryDataCle[b])
+                    while (len(listBinaryCle) != 8) :
+                        #Insertion de 0 à l'avant de la liste tant qu'elle de fait pas 8 de longueur
+                        listBinaryCle.insert(0, '0')
+                        
+                    resultat = []
+                    #Pour chaque bit
+                    for b in range(8) :
+                        #Si le bit du message est égal à 1 alors le résultat est identique au bit de la clé
+                        if (listBinaryMessage[b] == '1') :
+                            if (listBinaryCle[b] == '1') :
+                                resultat.append(1)
+                            else :
+                                resultat.append(0)
+                        #sinon le résultat est différent du bit de la clé
+                        else :
+                            if (listBinaryCle[b] == '1') :
+                                resultat.append(0)
+                            else :
+                                resultat.append(1)
+                    
+                    #Conversion du chiffre binaire final en int
+                    finalBinary = '0b'
+                    for b in range(len(resultat)) :
+                        resultat[b] = str(resultat[b])
+                        finalBinary += resultat[b]                        
+                    finalNumber = int(finalBinary, 2)
+                    #Remplacement de l'ancienne valeur par la nouvelle
+                    self.messageHacherCypter[messageParts][i, j] = finalNumber
+                           
 
 
 '''
