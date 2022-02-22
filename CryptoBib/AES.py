@@ -315,7 +315,7 @@ class MessageAES :
             self.messageHacher[messageParts][3, 3] = element32Tampon 
             
     '''
-  <<===========Fonction ShiftRows=============>>
+  <<===========Fonction MixColumn=============>>
     ''' 
     def mixColumn(self) :
         #Pour chaque matrice du message
@@ -449,7 +449,21 @@ class MessageAES :
         print("Le message encrypté est : ")
         print(''.join([str(elem) for elem in codedMessage])) 
                     
-            
+
+
+'''
+||==============================================||
+||         Fonctions de décryptage AES          ||
+||==============================================||
+'''            
+class DecryptMessageAES :
+    '''
+  <<=========Constructeur message AES=========>>
+    '''
+    def __init__(self, encryptedMessage) : 
+
+
+
 '''
 ||==============================================||
 ||                 Zone de test                 ||
