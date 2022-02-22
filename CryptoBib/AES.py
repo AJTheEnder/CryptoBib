@@ -458,10 +458,31 @@ class MessageAES :
 '''            
 class DecryptMessageAES :
     '''
-  <<=========Constructeur message AES=========>>
+  <<=======Constructeur décrypteur AES========>>
     '''
     def __init__(self, encryptedMessage) : 
-
+        self.messageHacheCypter = encryptedMessage
+    
+    '''
+  <<========Fonction ReverseSubBytes==========>>
+    '''   
+    def reverseSubBytes(self) :
+        for messageParts in range(len(self.messageHacheCypter)) :
+            for i in range(4) :
+                for j in range(4) :
+                    hexByte = format(self.messageHacheCypter[messageParts][i][j], 'x')
+                    
+                    if (len(hexByte) != 2) :
+                        hexByte = '0' + hexByte
+                        
+                    hexByte = '0x' + hexByte
+                    
+                    for x in range(len(S_BOX)) :
+                        for y in range(len(S_BOX[x])) :
+                            if (S_BOX[x][y] == hexByte) :
+                                decryptInt = '0x' + format(x, 'x') + format(y, 'x')
+                                self.messageHacheCypter[messageParts][i, j] = int(decryptInt, 16)
+        
 
 
 '''
