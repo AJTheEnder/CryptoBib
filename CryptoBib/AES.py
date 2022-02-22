@@ -461,27 +461,74 @@ class DecryptMessageAES :
   <<=======Constructeur décrypteur AES========>>
     '''
     def __init__(self, encryptedMessage) : 
-        self.messageHacheCypter = encryptedMessage
+        self.messageHacherCypter = encryptedMessage
     
     '''
   <<========Fonction ReverseSubBytes==========>>
     '''   
     def reverseSubBytes(self) :
-        for messageParts in range(len(self.messageHacheCypter)) :
+        #Pour chaque matrice du message
+        for messageParts in range(len(self.messageHacherCypter)) :
+            #Pour chaque élément de la matrice
             for i in range(4) :
                 for j in range(4) :
-                    hexByte = format(self.messageHacheCypter[messageParts][i][j], 'x')
+                    #Conversion de l'élément en hexadécimal
+                    hexByte = format(self.messageHacherCypter[messageParts][i][j], 'x')
                     
+                    #Si c'est un hexa à un chiffre formatage en format 2 chiffre
                     if (len(hexByte) != 2) :
                         hexByte = '0' + hexByte
                         
+                    #Formatage sous la forme 0x00 pour la recherche dans S_BOX
                     hexByte = '0x' + hexByte
                     
+                    #Parcours de toute la S_BOX
                     for x in range(len(S_BOX)) :
                         for y in range(len(S_BOX[x])) :
+                            #Si l'élément et l'élément x, y de la S_BOX sont les mêmes
                             if (S_BOX[x][y] == hexByte) :
+                                #L'int 0xXY devient le nouvel élément i, j de la matrice
                                 decryptInt = '0x' + format(x, 'x') + format(y, 'x')
-                                self.messageHacheCypter[messageParts][i, j] = int(decryptInt, 16)
+                                self.messageHacherCypter[messageParts][i, j] = int(decryptInt, 16)
+                                
+    '''
+  <<=======Fonction ReverseShiftRows==========>>
+    '''
+    def reverseShiftRows(self) :
+        #Pour chaque matrice dans le message
+        for messageParts in range(len(self.messageHacherCypter)) :
+            #On garde en mémoire les anciennes valeurs de la ligne 1
+            element10Tampon = self.messageHacherCypter[messageParts][1, 0]
+            element11Tampon = self.messageHacherCypter[messageParts][1, 1]
+            element12Tampon = self.messageHacherCypter[messageParts][1, 2]
+            element13Tampon = self.messageHacherCypter[messageParts][1, 3]
+            #On change la disposition des éléments de la ligne 1
+            self.messageHacherCypter[messageParts][1, 0] = element13Tampon
+            self.messageHacherCypter[messageParts][1, 1] = element10Tampon
+            self.messageHacherCypter[messageParts][1, 2] = element11Tampon
+            self.messageHacherCypter[messageParts][1, 3] = element12Tampon
+            
+            #On garde en mémoire les anciennes valeurs de la ligne 2
+            element20Tampon = self.messageHacherCypter[messageParts][2, 0]
+            element21Tampon = self.messageHacherCypter[messageParts][2, 1]
+            element22Tampon = self.messageHacherCypter[messageParts][2, 2]
+            element23Tampon = self.messageHacherCypter[messageParts][2, 3]
+            #On change la disposition des éléments de la ligne 2
+            self.messageHacherCypter[messageParts][2, 0] = element22Tampon
+            self.messageHacherCypter[messageParts][2, 1] = element23Tampon
+            self.messageHacherCypter[messageParts][2, 2] = element20Tampon
+            self.messageHacherCypter[messageParts][2, 3] = element21Tampon
+            
+            #On garde en mémoire les anciennes valeurs de la ligne 3
+            element30Tampon = self.messageHacherCypter[messageParts][3, 0]
+            element31Tampon = self.messageHacherCypter[messageParts][3, 1]
+            element32Tampon = self.messageHacherCypter[messageParts][3, 2]
+            element33Tampon = self.messageHacherCypter[messageParts][3, 3]
+            #On change la disposition des éléments de la ligne 3
+            self.messageHacherCypter[messageParts][3, 0] = element31Tampon
+            self.messageHacherCypter[messageParts][3, 1] = element32Tampon
+            self.messageHacherCypter[messageParts][3, 2] = element33Tampon
+            self.messageHacherCypter[messageParts][3, 3] = element30Tampon 
         
 
 
