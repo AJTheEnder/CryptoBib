@@ -1,5 +1,26 @@
-projet-specialise-2022-AJTheEnder
+/===============================================/
+|                                               |
+|                  CRYPTOBIB                    |
+|                                               |
+/===============================================/
 
-Nom du projet : CryptoBib
+Bienvenue dans CryptoBib !
 
-Lien du document de lancement kickoff : https://docs.google.com/document/d/1nPkqPme9ckb_ys_Vnhk75aQgRy4GIvTq/edit?usp=sharing&ouid=109996984310311271441&rtpof=true&sd=true
+CryptoBib est un programme sous le langage Python qui a pour but de donner
+la possibilité aux utilisateurs de crypter des messages grâce à différentes 
+méthodes de chiffrement. 3 méthodes seront disponible lors de la première 
+version de CryptoBib :
+    - La méthode AES
+    - la méthode RSA
+    - la méthode MD5
+
+A l'arrivé dans le programme l'utilisateur doit choisir une méthode de cryptage
+et devra ensuite rentré le message à crypté et les différents paramètres 
+nécessaires pour le chiffrage du message.
+
+Ensuite l'utilisateur à la possibilité de copier le message codé ou de télécharger
+un fichier contenant le message codé.
+
+De plus si le l'utilisateur est en possession d'un message codé et de la clé 
+de déchiffrement associé d'un autre utilisateur il aura la possibilité de déchiffré 
+le message en question.
