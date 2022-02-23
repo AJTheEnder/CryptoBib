@@ -571,7 +571,7 @@ class DecryptMessageAES :
                     #Pour chaque bit
                     for b in range(8) :
                         #Si le bit du message est égal à 1 alors le résultat est identique au bit de la clé
-                        if (listBinaryMessage[b] == '1') :
+                        if (listBinaryMessage[b] == '0') :
                             if (listBinaryCle[b] == '1') :
                                 resultat.append(1)
                             else :
