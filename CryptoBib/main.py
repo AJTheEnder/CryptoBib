@@ -53,7 +53,9 @@ messageHacher.turnIntoChar()
 
 print('')
 print("La matrice du message crypté est : ")
-print(messageHacher.messageHacher)
+for m in range(len(messageHacher.messageHacher)) :
+    print('')
+    print(messageHacher.messageHacher[m])
 
 messageCrypter = AES.DecryptMessageAES(messageHacher.messageHacher)
 
@@ -75,4 +77,6 @@ messageCrypter.turnIntoChar()
 
 print('')
 print("La matrice du message décrypté est : ")
-print(messageCrypter.messageHacherCypter)
+for m in range(len(messageCrypter.messageHacherCypter)) :
+    print('')
+    print(messageCrypter.messageHacherCypter[m])
