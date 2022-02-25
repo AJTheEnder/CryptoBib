@@ -125,7 +125,6 @@ def conversionHexTo(texteHex, typeRetour) :
         return texteHex
     
  
-    
 '''
 ||==============================================||
 ||                 Zone de test                 ||

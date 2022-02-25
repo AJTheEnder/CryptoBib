@@ -52,3 +52,6 @@ print(liste)
 
 print('')
 print(chr(96))
+
+print('')
+print(hex(1))

@@ -17,7 +17,7 @@ for subCle in range(len(cle.subCleList)) :
     print('')
     print(cle.subCleList[subCle])
   
-message = "ahah bip boup cc"
+message = "les chaussettes de l'archiduchesse sont-elles sèches, archisèches ?"
 print('')
 print("message : ", message)
 
@@ -52,5 +52,27 @@ print('')
 messageHacher.turnIntoChar()
 
 print('')
-print("La matrice de fin est : ")
+print("La matrice du message crypté est : ")
 print(messageHacher.messageHacher)
+
+messageCrypter = AES.DecryptMessageAES(messageHacher.messageHacher)
+
+messageCrypter.reverseAddRoundKey(cle.subCleList[9])
+messageCrypter.reverseShiftRows()
+messageCrypter.reverseSubBytes()
+
+for rounds in range(9) :
+    cle.currentKey = cle.subCleList[8 - rounds]
+    messageCrypter.reverseAddRoundKey(cle.currentKey)
+    messageCrypter.reverseMixColumn()
+    messageCrypter.reverseShiftRows()
+    messageCrypter.reverseSubBytes()
+    
+messageCrypter.reverseAddRoundKey(cle.originalCle)
+
+print('')
+messageCrypter.turnIntoChar()
+
+print('')
+print("La matrice du message décrypté est : ")
+print(messageCrypter.messageHacherCypter)

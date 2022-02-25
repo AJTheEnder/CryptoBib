@@ -594,7 +594,21 @@ class DecryptMessageAES :
                     finalNumber = int(finalBinary, 2)
                     #Remplacement de l'ancienne valeur par la nouvelle
                     self.messageHacherCypter[messageParts][i, j] = finalNumber        
-                           
+
+    '''
+  <<=========Fonction TurnIntoChar============>>
+    '''
+    def turnIntoChar(self) :
+        codedMessage = ""
+        #Pour chaque matrice du message
+        for messageParts in range(len(self.messageHacherCypter)) :
+            #Pour chaque élément de la matrice
+            for i in range(4) : 
+                for j in range(4) :
+                    codedMessage += chr(self.messageHacherCypter[messageParts][i][j])
+        print("Le message décrypté est : ")
+        print(''.join([str(elem) for elem in codedMessage]))                            
+
 
 
 '''
