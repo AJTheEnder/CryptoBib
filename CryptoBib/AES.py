@@ -1,4 +1,3 @@
-from typing import final
 from sage.all import *
 import annuaireConversion as AC
 import constantes as const

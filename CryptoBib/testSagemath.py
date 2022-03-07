@@ -1,4 +1,5 @@
 from sage.all import * 
+import arithmetiqueRSA as arithmetic
 
 print('')
 factorielTest = sage.all.factorial(9)
@@ -55,3 +56,7 @@ print(chr(96))
 
 print('')
 print(hex(1))
+
+print('')
+result = arithmetic.bezoutEquation(5, 64)
+print(result[0])
