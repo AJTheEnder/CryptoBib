@@ -1,7 +1,4 @@
-from sage.all import *
-import annuaireConversion as AC
 import arithmetiqueRSA as arithmetic
-import constantes as const
 
 '''
 ||==============================================||
@@ -9,6 +6,9 @@ import constantes as const
 ||==============================================|| 
 '''
 class CleRSA :
+    '''
+  <<===========Constructeur clé RSA===========>>
+    '''
     def __init__(self) :
         self.n = 0
         self.PhiN = 0
@@ -16,16 +16,28 @@ class CleRSA :
         self.privateKey = 0
         self.publicKey = (0, 0)
         
+    '''
+  <<===========Fonction calcul PhiN===========>>
+    '''
     def calculPhiN(self, p, q) :
         self.n = p * q
         self.PhiN = (p - 1) * (q - 1)
     
+    '''
+  <<===========Fonction choose Exp============>>
+    '''
     def chooseExponent(self, e) :
         self.exponent = e
     
+    '''
+  <<===========Fonction public key============>>
+    '''
     def calculPublicKey(self) :
-        self.publicKey = (self.n, self.exponent)
+        self.publicKey = (self.exponent, self.n)
         
+    '''
+  <<===========Fonction private key===========>> 
+    '''
     def calculPrivateKey(self) :
         self.privateKey = arithmetic.bezoutEquation(self.exponent, self.PhiN)[0]
         
@@ -37,6 +49,9 @@ class CleRSA :
 ||==============================================|| 
 '''        
 class MessageRSA :
+    '''
+  <<=========Constructeur message RSA=========>>
+    '''
     def __init__(self, message) :
         messageNum = []
         for i in range(len(message)) :
@@ -44,9 +59,21 @@ class MessageRSA :
         self.message = messageNum
         self.encryptedMessage = []
         
-    def Encryption(self, n, e) :
+    '''
+  <<===========Fonction encryption============>>
+    '''
+    def encryption(self, publicKey) :
         for i in range(len(self.message)) :
-            self.encryptedMessage.append(pow(self.message[i], e, n))
+            self.encryptedMessage.append(pow(self.message[i], publicKey[0], publicKey[1]))     
+            
+    '''
+  <<=========Fonction turn into char==========>>
+    '''
+    def turnIntoChar(self) :
+        messageChar = ""
+        for i in range(len(self.encryptedMessage)) :
+            messageChar += chr(self.encryptedMessage[i])
+        print(messageChar)
 
 
 
@@ -56,7 +83,25 @@ class MessageRSA :
 ||==============================================|| 
 '''        
 class DecryptMessageRSA :
+    '''
+  <<=====Constructeur decryptmessage RSA======>>
+    '''
     def __init__(self, message) :
         self.encryptedMessage = message
-        for i in range(len(message)) :
-            i = 0
+        self.decryptedMessage = []
+            
+    '''
+  <<===========Fonction decryption============>>
+    '''
+    def decryption(self, d, n) :
+        for i in range(len(self.encryptedMessage)) :
+            self.decryptedMessage.append(pow(self.encryptedMessage[i], d, n))
+            
+    '''
+  <<=========Fonction turn into char==========>>
+    '''
+    def turnIntoChar(self) :
+        messageChar = ""
+        for i in range(len(self.decryptedMessage)) :
+            messageChar += chr(self.decryptedMessage[i])
+        print(messageChar)

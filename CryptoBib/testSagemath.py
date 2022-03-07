@@ -1,5 +1,6 @@
 from sage.all import * 
 import arithmetiqueRSA as arithmetic
+import RSA
 
 print('')
 factorielTest = sage.all.factorial(9)
@@ -58,5 +59,37 @@ print('')
 print(hex(1))
 
 print('')
-result = arithmetic.bezoutEquation(5, 64)
-print(result[0])
+result = arithmetic.bezoutEquation(277, 32040)
+print(result)
+
+print('')
+keyRSA = RSA.CleRSA()
+keyRSA.calculPhiN(179, 181)
+print('n = ', keyRSA.n, ', Phi(n) = ', keyRSA.PhiN)
+keyRSA.chooseExponent(277)
+print('e = ', keyRSA.exponent)
+keyRSA.calculPublicKey()
+print('publicKey(n and e) = ', keyRSA.publicKey)
+keyRSA.calculPrivateKey()
+print('privateKey(d = inverse of exponent modulo Phi(n)) = ', keyRSA.privateKey)
+
+print('')
+message = 'Les chaussettes de l archiduchesse sont-elles sèches archisèches ?'
+messageRSA = RSA.MessageRSA(message)
+print(messageRSA.message)
+print('')
+messageRSA.encryption(keyRSA.publicKey)
+messageRSA.turnIntoChar()
+
+print('')
+encryptedMessageRSA = RSA.DecryptMessageRSA(messageRSA.encryptedMessage)
+print(encryptedMessageRSA.encryptedMessage)
+print('')
+encryptedMessageRSA.decryption(keyRSA.privateKey, keyRSA.n)
+print(encryptedMessageRSA.decryptedMessage)
+print('')
+encryptedMessageRSA.turnIntoChar()
+
+print('')
+print(arithmetic.isPrime(10))
+print(arithmetic.isPrime(7))
