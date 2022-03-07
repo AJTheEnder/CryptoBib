@@ -1,3 +1,5 @@
+import math
+
 '''
 ||==============================================||
 ||              Arithmetique RSA                ||
@@ -17,3 +19,11 @@ def bezoutEquation(a, b) :
     else :
         u , v = bezoutEquation(b, a % b)
         return v, u - (a//b) * v
+    
+def isPrime(n) :
+    a = 2
+    while (a <= math.sqrt(n)) :
+        if (n % a < 1) :
+            return False
+        a = a + 1
+    return True
