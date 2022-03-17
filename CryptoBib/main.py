@@ -1,4 +1,5 @@
-import AES 
+import AES
+import RSA 
 import os
 
 clear = lambda : os.system('clear')
@@ -93,6 +94,104 @@ def dechiffrementAES(savedData) :
     
     input('Rentrer n importe quoi pour revenir au menu princpal :')
     
+def creationCleRSA() :
+    print(' ||=====================================================||\n',
+          '||                      CryptoBib                      ||\n',
+          '||=====================================================||\n') 
+    
+    keyRSA = RSA.CleRSA()
+    
+    choice = False
+    p = int(input('\nChoisissez un nombre premier :'))
+    q = int(input('\nChoisissez en un deuxième distinct du premier :'))
+    while (choice == False) :
+        if (p != q) :
+            if (RSA.arithmetic.isPrime(p) == True and RSA.arithmetic.isPrime(q) == True) :
+                choice = True
+        if (choice == False) :
+            print('\nLes choix ne sont pas valides')
+            p = int(input('\nChoisissez un nombre premier :'))
+            q = int(input('\nChoisissez en un deuxième distinct du premier :'))
+    keyRSA.calculPhiN(p, q)
+    
+    choice = False
+    print('\nChoisissez un exposant qui est premier avec ', keyRSA.PhiN, ' : ')
+    e = int(input())
+    while (choice == False) :
+        if (RSA.arithmetic.pgcd(e, keyRSA.PhiN) == 1) :
+            choice = True
+        if (choice == False) :
+            print('\nCe choix n est pas valide')
+            print('\nChoisissez un exposant qui est premier avec ', keyRSA.PhiN, ' : ')
+            e = int(input())
+    keyRSA.chooseExponent(e)
+    
+    keyRSA.calculPublicKey()
+    keyRSA.calculPrivateKey()
+    
+    print('\nIMPORTANT A NOTER !!')
+    print('\nVotre clé publique est ', keyRSA.publicKey)
+    print('\nVotre clé privé est ', keyRSA.privateKey)
+    
+    input('\nRentrer n importe quoi pour revenir au menu princpal :')
+
+def chiffrementRSA() :
+    print(' ||=====================================================||\n',
+          '||                      CryptoBib                      ||\n',
+          '||=====================================================||\n') 
+    
+    message = input('\nChoisissez un message à chiffrer via la méthode RSA :')
+    messageRSA = RSA.MessageRSA(message)
+    
+    e = int(input('\nRentrer le premier élément de votre clé publique :'))
+    n = int(input('\nRentrer le deuxième élément de votre clé publique :'))
+    
+    print('\nChiffrement en cours...\n')
+    
+    messageRSA.encryption((e, n))
+    
+    print('\n')
+    messageRSA.turnIntoChar()
+    
+    saveMessageData = input('\nVoulez-vous sauvegarder les données du message crypter ? (y/n)\n') 
+    if (saveMessageData == 'y') :
+        return messageRSA.encryptedMessage
+    elif (saveMessageData == 'n') :
+        return None
+    else :
+        return None
+    
+def dechiffrementRSA(savedData) :
+    print(' ||=====================================================||\n',
+          '||                      CryptoBib                      ||\n',
+          '||=====================================================||\n') 
+    
+    print('\nChoisissez un message à déchiffrer via la méthode RSA\n')
+    choice = input('\nVoulez-vous écrire le message (1) ou charger les données sauvegarder (2) :')
+    if (choice == '1') :
+        message = input('\nEcrivez un message à décrypter :')
+    elif (choice == '2') :
+        if (savedData == None) :
+            print('\nAucune donnée sauvegardé')
+            message = input('\nEcrivez un message à décrypter :')
+        else :
+            message = savedData
+    else :
+        message = input('\nEcrivez un message à décrypter :')
+    messageRSA = RSA.DecryptMessageRSA(message)
+    
+    d = int(input('\nRentrez votre clé privée :'))
+    n = int(input('\nRentrez n :'))
+    
+    print('\nDechiffrement en cours...\n')
+    
+    messageRSA.decryption(d, n)
+    
+    print('\n')
+    messageRSA.turnIntoChar()
+    
+    input('\nRentrer n importe quoi pour revenir au menu princpal :')
+    
 savedData = None
 loop = True
 while (loop == True) :
@@ -101,11 +200,12 @@ while (loop == True) :
             '||                      CryptoBib                      ||\n',
             '||=====================================================||\n')
     print('\n',
-          '___________________1  Chiffrer AES  1___________________\n',
-          '___________________2 Déchiffrer AES 2___________________\n',
-          '___________________3  Chiffrer RSA  3___________________\n',
-          '___________________4 Déchiffrer RSA 4___________________\n',
-          '___________________5    Quitter     5___________________\n')
+          '___________________1   Chiffrer AES   1___________________\n',
+          '___________________2  Déchiffrer AES  2___________________\n',
+          '___________________3  Créer clés RSA  3___________________\n',
+          '___________________4   Chiffrer RSA   4___________________\n',
+          '___________________5  Déchiffrer RSA  5___________________\n',
+          '___________________6     Quitter      6___________________\n')
     inputLoop = True
     while (inputLoop == True) :
         choice = input('Choisissez une action à réaliser :')
@@ -118,10 +218,18 @@ while (loop == True) :
             dechiffrementAES(savedData)
             inputLoop = False
         elif (choice == '3') :
-            print('Chiffrement RSA non disponible\n')
+            clear()
+            creationCleRSA()
+            inputLoop = False
         elif (choice == '4') :
-            print('Déchiffrement RSA non disponible\n')
+            clear()
+            savedData = chiffrementRSA()
+            inputLoop = False
         elif (choice == '5') :
+            clear()
+            dechiffrementRSA(savedData)
+            inputLoop = False
+        elif (choice == '6') :
             print('Arret de CryptoBib\n')
             inputLoop = False
             loop = False

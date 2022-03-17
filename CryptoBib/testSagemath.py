@@ -73,22 +73,14 @@ print('publicKey(n and e) = ', keyRSA.publicKey)
 keyRSA.calculPrivateKey()
 print('privateKey(d = inverse of exponent modulo Phi(n)) = ', keyRSA.privateKey)
 
-print('')
-message = 'Les chaussettes de l archiduchesse sont-elles sèches archisèches ?'
-messageRSA = RSA.MessageRSA(message)
-print(messageRSA.message)
-print('')
-messageRSA.encryption(keyRSA.publicKey)
-messageRSA.turnIntoChar()
+n = (179 - 1) * (181 - 1)
+print(n)
+print(arithmetic.pgcd(n, 277))
 
 print('')
-encryptedMessageRSA = RSA.DecryptMessageRSA(messageRSA.encryptedMessage)
-print(encryptedMessageRSA.encryptedMessage)
-print('')
-encryptedMessageRSA.decryption(keyRSA.privateKey, keyRSA.n)
-print(encryptedMessageRSA.decryptedMessage)
-print('')
-encryptedMessageRSA.turnIntoChar()
+strNum = '69'
+numStrNum = int(strNum)
+print(type(numStrNum), ' : ', numStrNum)
 
 print('')
 print(arithmetic.isPrime(10))

@@ -39,7 +39,7 @@ class CleRSA :
   <<===========Fonction private key===========>> 
     '''
     def calculPrivateKey(self) :
-        self.privateKey = arithmetic.bezoutEquation(self.exponent, self.PhiN)[0]
+        self.privateKey = (arithmetic.bezoutEquation(self.exponent, self.PhiN)[0], self.n)
         
 
 
