@@ -1,18 +1,17 @@
-/===============================================/
-|                                               |
-|                  CRYPTOBIB                    |
-|                                               |
-/===============================================/
+/=======================/
+|                       |
+|       CRYPTOBIB       |
+|                       |
+/=======================/
 
 Bienvenue dans CryptoBib !
 
 CryptoBib est un programme sous le langage Python qui a pour but de donner
 la possibilité aux utilisateurs de crypter des messages grâce à différentes 
-méthodes de chiffrement. 3 méthodes seront disponible lors de la première 
+méthodes de chiffrement. 2 méthodes seront disponible lors de la première 
 version de CryptoBib :
     - La méthode AES
     - la méthode RSA
-    - la méthode MD5
 
 A l'arrivé dans le programme l'utilisateur doit choisir une méthode de cryptage
 et devra ensuite rentré le message à crypté et les différents paramètres 
