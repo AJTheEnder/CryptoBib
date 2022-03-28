@@ -16,7 +16,7 @@ def chiffrementAES() :
         lastBlock = 1
     else :
         lastBlock = 0
-    print('le message est d une longueur de ', len(message), 
+    print('le message est d\'une longueur de ', len(message), 
           'caractères, il possède ', len(message) // 16, 
           'blocks de 16 caractères et possède ', lastBlock, 
           'block incomplet de ', len(message) % 16, 'caractères\n')
@@ -76,7 +76,7 @@ def dechiffrementAES(savedData) :
     keyAES = AES.CleAES(key)
     keyAES.keySchedule()
     
-    print('\nDechiffrement en cours...\n')
+    print('\nDéchiffrement en cours...\n')
     
     messageAES.reverseAddRoundKey(keyAES.subCleList[9])
     messageAES.reverseShiftRows()
@@ -92,7 +92,7 @@ def dechiffrementAES(savedData) :
     print('\n')
     messageAES.turnIntoChar()
     
-    input('Rentrer n importe quoi pour revenir au menu princpal :')
+    input('Rentrer n\'importe quoi pour revenir au menu princpal :')
     
 def creationCleRSA() :
     print(' ||=====================================================||\n',
@@ -102,6 +102,7 @@ def creationCleRSA() :
     keyRSA = RSA.CleRSA()
     
     choice = False
+    print('\nRecherche de nombres premiers en cours...\n')
     keyRSA.printPrimeList()
     p = int(input('\nChoisissez un nombre premier :'))
     q = int(input('\nChoisissez en un deuxième distinct du premier :'))
@@ -116,13 +117,16 @@ def creationCleRSA() :
     keyRSA.calculPhiN(p, q)
     
     choice = False
+    print('\nRecherce d\'exposants en cours...\n')
+    keyRSA.calculExpList()
+    keyRSA.printExpList()
     print('\nChoisissez un exposant qui est premier avec ', keyRSA.PhiN, ' : ')
     e = int(input())
     while (choice == False) :
         if (RSA.arithmetic.pgcd(e, keyRSA.PhiN) == 1) :
             choice = True
         if (choice == False) :
-            print('\nCe choix n est pas valide')
+            print('\nCe choix n\'est pas valide')
             print('\nChoisissez un exposant qui est premier avec ', keyRSA.PhiN, ' : ')
             e = int(input())
     keyRSA.chooseExponent(e)
@@ -134,7 +138,7 @@ def creationCleRSA() :
     print('\nVotre clé publique est ', keyRSA.publicKey)
     print('\nVotre clé privé est ', keyRSA.privateKey)
     
-    input('\nRentrer n importe quoi pour revenir au menu princpal :')
+    input('\nRentrer n\'importe quoi pour revenir au menu princpal :')
 
 def chiffrementRSA() :
     print(' ||=====================================================||\n',
@@ -181,17 +185,17 @@ def dechiffrementRSA(savedData) :
         message = input('\nEcrivez un message à décrypter :')
     messageRSA = RSA.DecryptMessageRSA(message)
     
-    d = int(input('\nRentrez votre clé privée :'))
-    n = int(input('\nRentrez n :'))
+    d = int(input('\nRentrez le premier élément de votre clé privée :'))
+    n = int(input('\nRentrez le deuxième élément de votre clé privée :'))
     
-    print('\nDechiffrement en cours...\n')
+    print('\nDéchiffrement en cours...\n')
     
     messageRSA.decryption(d, n)
     
     print('\n')
     messageRSA.turnIntoChar()
     
-    input('\nRentrer n importe quoi pour revenir au menu princpal :')
+    input('\nRentrer n\'importe quoi pour revenir au menu princpal :')
     
 savedData = None
 loop = True
@@ -231,7 +235,7 @@ while (loop == True) :
             dechiffrementRSA(savedData)
             inputLoop = False
         elif (choice == '6') :
-            print('Arret de CryptoBib\n')
+            print('Arrêt de CryptoBib\n')
             inputLoop = False
             loop = False
         else :
