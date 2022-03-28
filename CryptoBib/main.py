@@ -102,6 +102,7 @@ def creationCleRSA() :
     keyRSA = RSA.CleRSA()
     
     choice = False
+    keyRSA.printPrimeList()
     p = int(input('\nChoisissez un nombre premier :'))
     q = int(input('\nChoisissez en un deuxième distinct du premier :'))
     while (choice == False) :
