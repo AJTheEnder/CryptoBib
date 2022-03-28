@@ -10,10 +10,19 @@ class CleRSA :
   <<===========Constructeur clé RSA===========>>
     '''
     def __init__(self) :
+        self.primeList = []
+        for i in range(17, 1017) :
+            if arithmetic.isPrime(i) == True :
+                self.primeList.append(i)
+                
         self.n = 0
+        
         self.PhiN = 0
+        
         self.exponent = 0
+        
         self.privateKey = 0
+        
         self.publicKey = (0, 0)
         
     '''
@@ -41,6 +50,26 @@ class CleRSA :
     def calculPrivateKey(self) :
         self.privateKey = (arithmetic.bezoutEquation(self.exponent, self.PhiN)[0], self.n)
         
+    '''
+  <<==========Fonction print primes===========>> 
+    '''
+    def printPrimeList(self) :
+      print('\nVoici une liste de nombres premiers possibles valides :')
+      print('=======================================================================')
+      for i in range(len(self.primeList) // 10) :
+        strRow = '|'
+        for j in range(10) :
+          if(len(str(self.primeList[i * 10 + j])) == 1) :
+            strRow += '  ' + str(self.primeList[i * 10 + j]) + '   |'
+          elif(len(str(self.primeList[i * 10 + j])) == 2) :
+            strRow += '  ' + str(self.primeList[i * 10 + j]) + '  |'      
+          elif(len(str(self.primeList[i * 10 + j])) == 3) :
+            strRow += ' ' + str(self.primeList[i * 10 + j]) + '  |'      
+          elif(len(str(self.primeList[i * 10 + j])) == 4) :
+            strRow += ' ' + str(self.primeList[i * 10 + j]) + ' |'     
+        print(strRow)
+        print('=======================================================================')      
+
 
 
 '''
